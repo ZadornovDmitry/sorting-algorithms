@@ -101,21 +101,28 @@ void sort(vector<int> &v, size_t left, size_t right, size_t mid)
 
 int main()
 {
-
+//vector
 	vector<int> v;
+// vector size
 	size_t size = 5000;
-
+// fill vector
 	for (unsigned i = 0; i < size; i++)
 		v.push_back(i);
+// shuffling vector data		
 	random_shuffle( v.begin(), v.end());
 
 	for (auto i : v)
 		cout << i << " ";
 	cout << endl;
+
+// choose sorting
+
 	//mergeSort(v, 0, size - 1);
 	//bubbleSort(v);
 	//insertionSort(v);
 	//shellsSort(v);
+
+// results	
 	for (auto i : v)
 		cout << i << " ";
 	cout << endl;
