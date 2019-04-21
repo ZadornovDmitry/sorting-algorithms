@@ -3,7 +3,10 @@
 #include <algorithm>
 
 using namespace std;
-void shellsSort(vector<int> &v)
+
+template <typename T>
+
+void shellsSort(vector<T> &v)
 {
 	for (unsigned gap = v.size() / 2; gap > 0; gap /= 2)
 	{
@@ -16,7 +19,10 @@ void shellsSort(vector<int> &v)
 		}
 	}
 }
-void insertionSort(vector<int> &v)
+
+
+template <typename T>
+void insertionSort(vector<T> &v)
 {
 	for (unsigned i = 1; i < v.size(); i++) {
 		
@@ -27,7 +33,8 @@ void insertionSort(vector<int> &v)
 	}
 }
 
-void bubbleSort(vector<int> &v)
+template <typename T>
+void bubbleSort(vector<T> &v)
 {
 	bool needSort = true;
 	while (needSort)
@@ -46,9 +53,10 @@ void bubbleSort(vector<int> &v)
 	}
 }
 
-
-void sort(vector<int> &v, size_t left, size_t right, size_t mid);
-void mergeSort(vector<int> &v, size_t left, size_t right)
+template <typename T>
+void sort(vector<T> &v, size_t left, size_t right, size_t mid);
+template <typename T>
+void mergeSort(vector<T> &v, size_t left, size_t right)
 {
 	if (left < right) 
 	{
@@ -59,12 +67,12 @@ void mergeSort(vector<int> &v, size_t left, size_t right)
 		sort(v, left, right, mid);
 	}
 }
-
-void sort(vector<int> &v, size_t left, size_t right, size_t mid)
+template <typename T>
+void sort(vector<T> &v, size_t left, size_t right, size_t mid)
 {
 	size_t l = left;
 	size_t r = mid+1;
-	vector<int> tmp;
+	vector<T> tmp;
 
 	while (l <= mid && r <= right)
 	{
@@ -117,7 +125,7 @@ int main()
 
 // choose sorting
 
-	//mergeSort(v, 0, size - 1);
+	mergeSort(v, 0, size - 1);
 	//bubbleSort(v);
 	//insertionSort(v);
 	//shellsSort(v);
