@@ -6,7 +6,7 @@ using namespace std;
 
 template<typename T>
 
-void printVector(vector<T> &v)
+void printVector(vector<T> &v  )
 {
 	for (auto i : v)
 		cout << i;
@@ -14,9 +14,9 @@ void printVector(vector<T> &v)
 }
 
 
-template<typename T>
+template<typename T, typename F>
 
-void bubbleSort(vector<T> &v, bool increas = true)
+void bubbleSort(vector<T> &v, F&&compare)
 {
 	cout << "bubble sort" << endl;
 
@@ -27,49 +27,31 @@ void bubbleSort(vector<T> &v, bool increas = true)
 		needSort = false;
 		for (int i = 0; i < v.size() - 1; i++)
 		{
-			if (increas)
-			{
-				if (v.at(i + 1) < v.at(i)) {
-					swap(v.at(i), v.at(i + 1));
-					needSort = true;
-				}
+			if (compare(v.at(i),v.at(i+1))) {
+				swap(v.at(i), v.at(i + 1));
+				needSort = true;
 			}
-			else
-			{
-				if (v.at(i + 1) > v.at(i)) {
-					swap(v.at(i), v.at(i + 1));
-					needSort = true;
-				}
-			}
-
 		}
 	}
 }
 
-template <typename T>
+template <typename T, typename F>
 
-void insertion(vector<T> &v, bool increas = true)
+void insertion(vector<T> &v, F&&compare)
 {
 	cout << "insertion sort" << endl;
 
 	for (unsigned i = 1; i < v.size(); i++)
 	{
-		if (increas) {
-			for (unsigned j = i; j >= 1 && v[j] < v[j - 1]; --j)
-				swap(v.at(j), v.at(j - 1));
-		}
-		else
-		{
-			for (unsigned j = i; j >= 1 && v[j] > v[j - 1]; --j)
-				swap(v.at(j), v.at(j - 1));
-		}
+		for (unsigned j = i; j >= 1 && compare(v[j], v[j-1]); --j)
+			swap(v.at(j), v.at(j - 1));
 	}
 }
 
 
-template <typename T>
+template <typename T, typename F>
 
-void shellsort(vector<T> &v, bool increas = true)
+void shellsort(vector<T> &v, F&&compare)
 {
 	cout << "shellsort sort" << endl;
 
@@ -77,16 +59,8 @@ void shellsort(vector<T> &v, bool increas = true)
 	{
 		for (unsigned i = gap; i < v.size(); i++)
 		{
-			if (increas)
-			{
-				for (unsigned j = i; j >= gap && v[j] < v[j - gap]; j -= gap)
-					swap(v[j], v[j - 1]);
-			}
-			else
-			{
-				for (unsigned j = i; j >= gap && v[j] > v[j - gap]; j -= gap)
-					swap(v[j], v[j - 1]);
-			}
+			for (unsigned j = i; j >= gap && compare(v[j], v[j - gap]); j -= gap)
+				swap(v[j], v[j - 1]);
 		}
 	}
 }
@@ -94,20 +68,22 @@ void shellsort(vector<T> &v, bool increas = true)
 template <typename T>
 void merge(vector<T> &v, size_t left, size_t right, size_t mid, bool increas);
 
-template <typename T>
+template <typename T, typename F>
 
-void mergesort(vector<T> &v, rsize_t left, size_t right, bool increas = true)
+void mergesort(vector<T> &v, rsize_t left, size_t right, F&&compare)
 {
-	cout << "mergesort sort" << endl;
+	if (left == 0 && right == v.size()-1) cout << "mergesort sort" << endl;
 
-	if (v.size() == 1 || left == right) return;
-	size_t mid = (left + right) / 2;
-	mergesort(v, left, mid, increas);
-	mergesort(v, mid + 1, right, increas);
-	merge(v, left, right, mid, increas);
+	if (left < right)
+	{
+		size_t mid = (left + right) / 2;
+		mergesort(v, left, mid, compare);
+		mergesort(v, mid + 1, right, compare);
+		merge(v, left, right, mid, compare);
+	}
 }
-template <typename T>
-void merge(vector<T> &v, size_t left, size_t right, size_t mid, bool increas)
+template <typename T, typename F>
+void merge(vector<T> &v, size_t left, size_t right, size_t mid, F&&compare)
 {
 	vector<T> tmp;
 	size_t l = left;
@@ -115,12 +91,10 @@ void merge(vector<T> &v, size_t left, size_t right, size_t mid, bool increas)
 
 	while (l <= mid && r <= right)
 	{
-		bool compare = increas ? v.at(l) < v.at(r) : v.at(l) > v.at(r);
-		if (compare)
+		if (compare(v.at(l), v.at(r)))
 			tmp.push_back(v.at(l++));
 		else
 			tmp.push_back(v.at(r++));
-
 	}
 
 	while (l <= mid)
@@ -154,10 +128,11 @@ int main()
 
 // sorting
 
-	//bubbleSort(v);
-	//insertion(v);
-	//shellsort(v);
-	//mergesort(v, 0, v.size()-1);
+	auto f = [](int i1, int i2) {return i1 < i2; };
+	//bubbleSort(v, f);
+	//insertion(v, f);
+	//shellsort(v, f);
+	mergesort(v, 0, v.size()-1, [](int i1, int i2) {return i1 <= i2; });
 
 	printVector(v);
 
